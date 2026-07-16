@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createPoll, listPolls } from "@/lib/store";
 
 export async function GET() {
-  return NextResponse.json({ polls: listPolls() });
+  return NextResponse.json({ polls: await listPolls() });
 }
 
 export async function POST(req: NextRequest) {
@@ -19,6 +19,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "At least 2 options are required" }, { status: 400 });
   }
 
-  const poll = createPoll(question, options);
+  const poll = await createPoll(question, options);
   return NextResponse.json({ poll }, { status: 201 });
 }

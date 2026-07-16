@@ -7,7 +7,7 @@ type Poll = {
   id: string;
   question: string;
   options: { id: string; text: string; votes: number }[];
-  createdAt: number;
+  createdAt: string;
 };
 
 export default function PollsPage() {

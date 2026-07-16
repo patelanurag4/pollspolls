@@ -13,7 +13,7 @@ export async function POST(
     return NextResponse.json({ error: "optionId is required" }, { status: 400 });
   }
 
-  const poll = vote(id, optionId);
+  const poll = await vote(id, optionId);
   if (!poll) {
     return NextResponse.json({ error: "Poll or option not found" }, { status: 404 });
   }

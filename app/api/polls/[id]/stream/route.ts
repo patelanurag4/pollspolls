@@ -14,7 +14,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const poll = getPoll(id);
+  const poll = await getPoll(id);
   if (!poll) {
     return new Response("Poll not found", { status: 404 });
   }

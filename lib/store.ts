@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { randomUUID } from "crypto";
+import { prisma } from "@/lib/prisma";
 
 export type PollOption = {
   id: string;
@@ -11,73 +11,69 @@ export type Poll = {
   id: string;
   question: string;
   options: PollOption[];
-  createdAt: number;
+  createdAt: Date;
 };
 
-type Store = {
-  polls: Map<string, Poll>;
-  emitter: EventEmitter;
-};
+// Live-update pub/sub only, kept in process memory (poll data itself lives in
+// Postgres). Parked on `globalThis` so it survives Next.js dev-mode reloads.
+const globalForEmitter = globalThis as unknown as { __pollEmitter?: EventEmitter };
+const emitter = globalForEmitter.__pollEmitter ?? (globalForEmitter.__pollEmitter = new EventEmitter().setMaxListeners(0));
 
-// Kept on `globalThis` so the data and emitter survive Next.js dev-mode
-// module reloads (each edit would otherwise reset the in-memory store).
-const globalForStore = globalThis as unknown as { __pollStore?: Store };
+export async function createPoll(question: string, optionTexts: string[]): Promise<Poll> {
+  return prisma.poll.create({
+    data: {
+      question,
+      options: { create: optionTexts.map((text) => ({ text })) },
+    },
+    include: { options: true },
+  });
+}
 
-const store: Store =
-  globalForStore.__pollStore ??
-  (globalForStore.__pollStore = {
-    polls: new Map(),
-    emitter: new EventEmitter().setMaxListeners(0),
+export async function getPoll(id: string): Promise<Poll | null> {
+  return prisma.poll.findUnique({
+    where: { id },
+    include: { options: true },
+  });
+}
+
+export async function vote(pollId: string, optionId: string): Promise<Poll | null> {
+  const option = await prisma.pollOption.findFirst({ where: { id: optionId, pollId } });
+  if (!option) return null;
+
+  await prisma.pollOption.update({
+    where: { id: optionId },
+    data: { votes: { increment: 1 } },
   });
 
-export function createPoll(question: string, optionTexts: string[]): Poll {
-  const poll: Poll = {
-    id: randomUUID(),
-    question,
-    options: optionTexts.map((text) => ({
-      id: randomUUID(),
-      text,
-      votes: 0,
-    })),
-    createdAt: Date.now(),
-  };
-  store.polls.set(poll.id, poll);
-  return poll;
-}
-
-export function getPoll(id: string): Poll | undefined {
-  return store.polls.get(id);
-}
-
-export function vote(pollId: string, optionId: string): Poll | undefined {
-  const poll = store.polls.get(pollId);
-  if (!poll) return undefined;
-  const option = poll.options.find((o) => o.id === optionId);
-  if (!option) return undefined;
-  option.votes += 1;
-  store.emitter.emit(pollId, poll);
+  const poll = await getPoll(pollId);
+  if (poll) emitter.emit(pollId, poll);
   return poll;
 }
 
 export function subscribe(pollId: string, listener: (poll: Poll) => void) {
-  store.emitter.on(pollId, listener);
-  return () => store.emitter.off(pollId, listener);
+  emitter.on(pollId, listener);
+  return () => emitter.off(pollId, listener);
 }
 
-export function listPolls(): Poll[] {
-  return Array.from(store.polls.values()).sort((a, b) => b.createdAt - a.createdAt);
+export async function listPolls(): Promise<Poll[]> {
+  return prisma.poll.findMany({
+    include: { options: true },
+    orderBy: { createdAt: "desc" },
+  });
 }
 
-export function deletePoll(id: string): boolean {
-  const existed = store.polls.delete(id);
-  if (existed) {
-    store.emitter.emit(`${id}:deleted`);
-    store.emitter.removeAllListeners(id);
+export async function deletePoll(id: string): Promise<boolean> {
+  try {
+    await prisma.poll.delete({ where: { id } });
+  } catch {
+    return false;
   }
-  return existed;
+  emitter.emit(`${id}:deleted`);
+  emitter.removeAllListeners(id);
+  return true;
 }
 
 export function subscribeToDeletion(pollId: string, listener: () => void) {
-  store.emitter.once(`${pollId}:deleted`, listener);
-  return () => store.emitter.off(`${pollId}:deleted`, listener);
+  emitter.once(`${pollId}:deleted`, listener);
+  return () => emitter.off(`${pollId}:deleted`, listener);
 }
