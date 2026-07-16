@@ -12,12 +12,25 @@ model Poll {
   question  String
   createdAt DateTime     @default(now())
   options   PollOption[]
+  responses Response[]
 }
 
 model PollOption {
-  id     String @id @default(uuid())
-  text   String
-  votes  Int    @default(0)
-  pollId String
-  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  id        String     @id @default(uuid())
+  text      String
+  pollId    String
+  poll      Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  responses Response[]
+}
+
+model Response {
+  id           String   @id @default(uuid())
+  pollId       String
+  optionId     String
+  respondentId String
+  createdAt    DateTime @default(now())
+  poll         Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option       PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([pollId, respondentId])
 }
