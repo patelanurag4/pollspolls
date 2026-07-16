@@ -68,18 +68,18 @@ export default function VotePage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-950 px-4 py-16">
-      <main className="w-full max-w-lg rounded-2xl border border-white/10 bg-zinc-900 p-8 shadow-sm">
-        {loading && <p className="text-zinc-400">Loading…</p>}
+    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-16">
+      <main className="w-full max-w-lg rounded-2xl border border-black/[.08] bg-white p-8 shadow-sm">
+        {loading && <p className="text-zinc-600">Loading…</p>}
 
-        {!loading && error && !poll && <p className="text-red-400">{error}</p>}
+        {!loading && error && !poll && <p className="text-red-600">{error}</p>}
 
         {poll && (
           <>
-            <h1 className="text-2xl font-semibold text-zinc-50">{poll.question}</h1>
+            <h1 className="text-2xl font-semibold text-black">{poll.question}</h1>
 
             {hasResponded ? (
-              <p className="mt-6 text-zinc-300">Thanks — your response has been recorded.</p>
+              <p className="mt-6 text-zinc-700">Thanks — your response has been recorded.</p>
             ) : (
               <div className="mt-6 flex flex-col gap-3">
                 {poll.options.map((option) => (
@@ -87,8 +87,8 @@ export default function VotePage() {
                     key={option.id}
                     className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-colors ${
                       selectedOptionId === option.id
-                        ? "border-white bg-white/10"
-                        : "border-white/15 hover:bg-white/5"
+                        ? "border-black bg-black/[.04]"
+                        : "border-black/[.12] hover:bg-black/[.02]"
                     }`}
                   >
                     <input
@@ -99,16 +99,16 @@ export default function VotePage() {
                       onChange={() => setSelectedOptionId(option.id)}
                       className="h-4 w-4"
                     />
-                    <span className="text-zinc-50">{option.text}</span>
+                    <span className="text-black">{option.text}</span>
                   </label>
                 ))}
 
-                {error && <p className="text-sm text-red-400">{error}</p>}
+                {error && <p className="text-sm text-red-600">{error}</p>}
 
                 <button
                   onClick={handleVote}
                   disabled={!selectedOptionId || submitting}
-                  className="mt-2 flex h-11 w-full items-center justify-center rounded-full bg-zinc-50 px-5 font-medium text-zinc-950 transition-colors hover:bg-zinc-200 disabled:opacity-50"
+                  className="mt-2 flex h-11 w-full items-center justify-center rounded-full bg-black px-5 font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50"
                 >
                   {submitting ? "Submitting…" : "Submit response"}
                 </button>

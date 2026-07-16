@@ -42,19 +42,19 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen flex-1 bg-zinc-950">
-      <header className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-        <h1 className="text-xl font-semibold text-zinc-50">PollApp</h1>
+    <div className="min-h-screen flex-1 bg-zinc-50">
+      <header className="flex items-center justify-between border-b border-black/[.08] bg-white px-6 py-4">
+        <h1 className="text-xl font-semibold text-black">PollApp</h1>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-full bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-950 transition-colors hover:bg-zinc-200"
+            className="rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
           >
             + New poll
           </button>
           <button
             onClick={handleLogout}
-            className="rounded-full border border-white/15 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/5"
+            className="rounded-full border border-black/[.12] px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-black/[.04]"
           >
             Logout
           </button>
@@ -62,14 +62,14 @@ export default function Dashboard() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
         {polls && polls.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-white/15 px-6 py-16 text-center">
-            <p className="text-zinc-400">No polls yet.</p>
+          <div className="rounded-2xl border border-dashed border-black/[.12] px-6 py-16 text-center">
+            <p className="text-zinc-600">No polls yet.</p>
             <button
               onClick={() => setModalOpen(true)}
-              className="mt-4 rounded-full bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-zinc-200"
+              className="mt-4 rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
             >
               Create your first poll
             </button>
@@ -83,10 +83,10 @@ export default function Dashboard() {
               <button
                 key={poll.id}
                 onClick={() => router.push(`/polls/${poll.id}`)}
-                className="flex flex-col items-start rounded-2xl border border-white/10 bg-zinc-900 p-5 text-left transition-colors hover:border-white/25"
+                className="flex flex-col items-start rounded-2xl border border-black/[.08] bg-white p-5 text-left shadow-sm transition-colors hover:border-black/25"
               >
-                <p className="line-clamp-2 font-medium text-zinc-50">{poll.question}</p>
-                <p className="mt-2 text-sm text-zinc-400">
+                <p className="line-clamp-2 font-medium text-black">{poll.question}</p>
+                <p className="mt-2 text-sm text-zinc-600">
                   {totalVotes} response{totalVotes === 1 ? "" : "s"} · {poll.options.length} options
                 </p>
                 <p className="mt-1 text-xs text-zinc-500">
@@ -164,13 +164,13 @@ function NewPollModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-zinc-900 p-8 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      <div className="w-full max-w-lg rounded-2xl border border-black/[.08] bg-white p-8 shadow-xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-zinc-50">New poll</h2>
+          <h2 className="text-xl font-semibold text-black">New poll</h2>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-50"
+            className="text-zinc-500 hover:text-black"
             aria-label="Close"
           >
             ✕
@@ -179,19 +179,19 @@ function NewPollModal({
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5">
           <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-50">Question</label>
+            <label className="mb-1 block text-sm font-medium text-black">Question</label>
             <input
               type="text"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="What should we order for lunch?"
               autoFocus
-              className="w-full rounded-lg border border-white/15 bg-transparent px-3 py-2 text-zinc-50 outline-none focus:border-white/40"
+              className="w-full rounded-lg border border-black/[.12] bg-transparent px-3 py-2 text-black outline-none focus:border-black/40"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-zinc-50">Options</label>
+            <label className="mb-1 block text-sm font-medium text-black">Options</label>
             <div className="flex flex-col gap-2">
               {options.map((option, index) => (
                 <div key={index} className="flex items-center gap-2">
@@ -200,13 +200,13 @@ function NewPollModal({
                     value={option}
                     onChange={(e) => updateOption(index, e.target.value)}
                     placeholder={`Option ${index + 1}`}
-                    className="w-full rounded-lg border border-white/15 bg-transparent px-3 py-2 text-zinc-50 outline-none focus:border-white/40"
+                    className="w-full rounded-lg border border-black/[.12] bg-transparent px-3 py-2 text-black outline-none focus:border-black/40"
                   />
                   {options.length > 2 && (
                     <button
                       type="button"
                       onClick={() => removeOption(index)}
-                      className="shrink-0 rounded-lg border border-white/15 px-3 py-2 text-sm text-zinc-400 hover:bg-white/5"
+                      className="shrink-0 rounded-lg border border-black/[.12] px-3 py-2 text-sm text-zinc-600 hover:bg-black/[.04]"
                       aria-label={`Remove option ${index + 1}`}
                     >
                       ✕
@@ -218,18 +218,18 @@ function NewPollModal({
             <button
               type="button"
               onClick={addOption}
-              className="mt-2 text-sm font-medium text-zinc-400 hover:text-zinc-50"
+              className="mt-2 text-sm font-medium text-zinc-600 hover:text-black"
             >
               + Add option
             </button>
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             type="submit"
             disabled={submitting}
-            className="mt-2 flex h-11 w-full items-center justify-center rounded-full bg-zinc-50 px-5 font-medium text-zinc-950 transition-colors hover:bg-zinc-200 disabled:opacity-50"
+            className="mt-2 flex h-11 w-full items-center justify-center rounded-full bg-black px-5 font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50"
           >
             {submitting ? "Creating…" : "Create poll"}
           </button>

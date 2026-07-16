@@ -129,11 +129,11 @@ export default function PollDetailPage() {
 
   if (deleted) {
     return (
-      <div className="min-h-screen bg-zinc-950 px-6 py-16 text-center">
-        <p className="text-zinc-300">This poll has been deleted.</p>
+      <div className="min-h-screen bg-zinc-50 px-6 py-16 text-center">
+        <p className="text-zinc-700">This poll has been deleted.</p>
         <Link
           href="/"
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-zinc-50 px-5 font-medium text-zinc-950 hover:bg-zinc-200"
+          className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-black px-5 font-medium text-white hover:bg-zinc-800"
         >
           Back to dashboard
         </Link>
@@ -142,29 +142,29 @@ export default function PollDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <header className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-        <Link href="/" className="text-sm font-medium text-zinc-400 hover:text-zinc-50">
+    <div className="min-h-screen bg-zinc-50">
+      <header className="flex items-center justify-between border-b border-black/[.08] bg-white px-6 py-4">
+        <Link href="/" className="text-sm font-medium text-zinc-600 hover:text-black">
           ← Dashboard
         </Link>
-        <h1 className="text-xl font-semibold text-zinc-50">Poll detail</h1>
+        <h1 className="text-xl font-semibold text-black">Poll detail</h1>
         <button
           onClick={handleDelete}
           disabled={deleting}
-          className="text-sm font-medium text-red-400 hover:text-red-300 disabled:opacity-50"
+          className="text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50"
         >
           {deleting ? "Deleting…" : "Delete poll"}
         </button>
       </header>
 
       <main className="mx-auto max-w-3xl px-6 py-8">
-        {loadError && <p className="text-red-400">{loadError}</p>}
+        {loadError && <p className="text-red-600">{loadError}</p>}
 
         {poll && (
           <>
-            <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-zinc-900 px-6 py-4">
-              <p className="text-zinc-300">
-                <span className="text-2xl font-semibold text-zinc-50">{totalVotes}</span>{" "}
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-black/[.08] bg-white px-6 py-4 shadow-sm">
+              <p className="text-zinc-700">
+                <span className="text-2xl font-semibold text-black">{totalVotes}</span>{" "}
                 response{totalVotes === 1 ? "" : "s"}
               </p>
               <p className="text-sm text-zinc-500">
@@ -172,18 +172,18 @@ export default function PollDetailPage() {
               </p>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-900 p-6">
-              <h2 className="text-sm font-medium text-zinc-50">Share this poll</h2>
+            <div className="mt-6 rounded-2xl border border-black/[.08] bg-white p-6 shadow-sm">
+              <h2 className="text-sm font-medium text-black">Share this poll</h2>
               <div className="mt-3 flex flex-col gap-3 sm:flex-row">
                 <div className="flex flex-1 items-center gap-2">
                   <input
                     readOnly
                     value={respondUrl}
-                    className="w-full truncate rounded-lg border border-white/15 bg-transparent px-3 py-2 text-sm text-zinc-300"
+                    className="w-full truncate rounded-lg border border-black/[.12] bg-transparent px-3 py-2 text-sm text-zinc-700"
                   />
                   <button
                     onClick={() => copyLink("respond")}
-                    className="shrink-0 rounded-lg border border-white/15 px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-white/5"
+                    className="shrink-0 rounded-lg border border-black/[.12] px-3 py-2 text-sm font-medium text-zinc-800 hover:bg-black/[.04]"
                   >
                     {copied === "respond" ? "Copied!" : "Copy respond link"}
                   </button>
@@ -194,11 +194,11 @@ export default function PollDetailPage() {
                   <input
                     readOnly
                     value={resultsUrl}
-                    className="w-full truncate rounded-lg border border-white/15 bg-transparent px-3 py-2 text-sm text-zinc-300"
+                    className="w-full truncate rounded-lg border border-black/[.12] bg-transparent px-3 py-2 text-sm text-zinc-700"
                   />
                   <button
                     onClick={() => copyLink("results")}
-                    className="shrink-0 rounded-lg border border-white/15 px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-white/5"
+                    className="shrink-0 rounded-lg border border-black/[.12] px-3 py-2 text-sm font-medium text-zinc-800 hover:bg-black/[.04]"
                   >
                     {copied === "results" ? "Copied!" : "Copy live results link"}
                   </button>
@@ -208,22 +208,22 @@ export default function PollDetailPage() {
 
             <form
               onSubmit={handleSave}
-              className="mt-6 flex flex-col gap-5 rounded-2xl border border-white/10 bg-zinc-900 p-6"
+              className="mt-6 flex flex-col gap-5 rounded-2xl border border-black/[.08] bg-white p-6 shadow-sm"
             >
-              <h2 className="text-sm font-medium text-zinc-50">Edit poll</h2>
+              <h2 className="text-sm font-medium text-black">Edit poll</h2>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-50">Question</label>
+                <label className="mb-1 block text-sm font-medium text-black">Question</label>
                 <input
                   type="text"
                   value={formQuestion}
                   onChange={(e) => setFormQuestion(e.target.value)}
-                  className="w-full rounded-lg border border-white/15 bg-transparent px-3 py-2 text-zinc-50 outline-none focus:border-white/40"
+                  className="w-full rounded-lg border border-black/[.12] bg-transparent px-3 py-2 text-black outline-none focus:border-black/40"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-50">Options</label>
+                <label className="mb-1 block text-sm font-medium text-black">Options</label>
                 <div className="flex flex-col gap-2">
                   {formOptions.map((option, index) => (
                     <div key={option.id ?? `new-${index}`} className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export default function PollDetailPage() {
                         value={option.text}
                         onChange={(e) => updateOption(index, e.target.value)}
                         placeholder={`Option ${index + 1}`}
-                        className="w-full rounded-lg border border-white/15 bg-transparent px-3 py-2 text-zinc-50 outline-none focus:border-white/40"
+                        className="w-full rounded-lg border border-black/[.12] bg-transparent px-3 py-2 text-black outline-none focus:border-black/40"
                       />
                       <span className="w-20 shrink-0 text-right text-sm text-zinc-500">
                         {option.id ? `${votesByOptionId.get(option.id) ?? 0} votes` : "new"}
@@ -241,7 +241,7 @@ export default function PollDetailPage() {
                         <button
                           type="button"
                           onClick={() => removeOption(index)}
-                          className="shrink-0 rounded-lg border border-white/15 px-3 py-2 text-sm text-zinc-400 hover:bg-white/5"
+                          className="shrink-0 rounded-lg border border-black/[.12] px-3 py-2 text-sm text-zinc-600 hover:bg-black/[.04]"
                           aria-label={`Remove option ${index + 1}`}
                         >
                           ✕
@@ -253,18 +253,18 @@ export default function PollDetailPage() {
                 <button
                   type="button"
                   onClick={addOption}
-                  className="mt-2 text-sm font-medium text-zinc-400 hover:text-zinc-50"
+                  className="mt-2 text-sm font-medium text-zinc-600 hover:text-black"
                 >
                   + Add option
                 </button>
               </div>
 
-              {error && <p className="text-sm text-red-400">{error}</p>}
+              {error && <p className="text-sm text-red-600">{error}</p>}
 
               <button
                 type="submit"
                 disabled={saving}
-                className="flex h-11 w-full items-center justify-center rounded-full bg-zinc-50 px-5 font-medium text-zinc-950 transition-colors hover:bg-zinc-200 disabled:opacity-50 sm:w-auto"
+                className="flex h-11 w-full items-center justify-center rounded-full bg-black px-5 font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 sm:w-auto"
               >
                 {saving ? "Saving…" : saved ? "Saved!" : "Save changes"}
               </button>
