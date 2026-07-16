@@ -68,27 +68,37 @@ export default function VotePage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-16">
-      <main className="w-full max-w-lg rounded-2xl border border-black/[.08] bg-white p-8 shadow-sm">
+    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-10 sm:py-16">
+      <main className="w-full max-w-lg rounded-2xl border border-black/[.08] bg-white p-6 shadow-sm sm:p-8 lg:w-[60%] lg:max-w-2xl">
         {loading && <p className="text-zinc-600">Loading…</p>}
 
         {!loading && error && !poll && <p className="text-red-600">{error}</p>}
 
         {poll && (
           <>
-            <h1 className="text-2xl font-semibold text-black">{poll.question}</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Poll</p>
+            <h1 className="mt-2 text-2xl font-bold leading-snug text-black sm:text-3xl">
+              {poll.question}
+            </h1>
 
             {hasResponded ? (
-              <p className="mt-6 text-zinc-700">Thanks — your response has been recorded.</p>
+              <div className="mt-8 flex flex-col items-center gap-3 py-4 text-center">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-xl text-white">
+                  ✓
+                </span>
+                <p className="text-lg font-medium text-zinc-800">
+                  Thanks — your response has been recorded.
+                </p>
+              </div>
             ) : (
               <div className="mt-6 flex flex-col gap-3">
                 {poll.options.map((option) => (
                   <label
                     key={option.id}
-                    className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-colors ${
+                    className={`flex min-h-[3.25rem] cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-base transition-colors sm:text-lg ${
                       selectedOptionId === option.id
-                        ? "border-black bg-black/[.04]"
-                        : "border-black/[.12] hover:bg-black/[.02]"
+                        ? "border-black bg-black/[.04] ring-1 ring-black"
+                        : "border-black/[.12] active:bg-black/[.04] sm:hover:bg-black/[.02]"
                     }`}
                   >
                     <input
@@ -97,7 +107,7 @@ export default function VotePage() {
                       value={option.id}
                       checked={selectedOptionId === option.id}
                       onChange={() => setSelectedOptionId(option.id)}
-                      className="h-4 w-4"
+                      className="h-5 w-5 shrink-0 accent-black"
                     />
                     <span className="text-black">{option.text}</span>
                   </label>
@@ -108,7 +118,7 @@ export default function VotePage() {
                 <button
                   onClick={handleVote}
                   disabled={!selectedOptionId || submitting}
-                  className="mt-2 flex h-11 w-full items-center justify-center rounded-full bg-black px-5 font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50"
+                  className="mt-3 flex h-12 w-full items-center justify-center rounded-full bg-black px-5 text-base font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50"
                 >
                   {submitting ? "Submitting…" : "Submit response"}
                 </button>

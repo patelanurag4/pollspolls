@@ -57,20 +57,29 @@ export default function ResultsPage() {
   }, [id]);
 
   const totalVotes = poll ? poll.options.reduce((sum, o) => sum + o.votes, 0) : 0;
+  const maxVotes = poll ? Math.max(...poll.options.map((o) => o.votes)) : 0;
+  const leaders = poll && totalVotes > 0 ? poll.options.filter((o) => o.votes === maxVotes) : [];
+  const leaderId = leaders.length === 1 ? leaders[0].id : null;
 
   return (
     <div className="flex flex-1 items-center justify-center bg-transparent px-4 py-10">
-      <main className="w-[80%] max-w-5xl">
+      <main className="w-[80%] max-w-5xl rounded-3xl border border-black/[.06] bg-white/70 p-10 shadow-2xl backdrop-blur-md sm:p-12">
         {deleted && <p className="text-lg text-black">This poll has been deleted.</p>}
 
         {!deleted && error && !poll && <p className="text-lg text-red-600">{error}</p>}
 
         {!deleted && poll && (
           <>
-            <div className="flex items-start justify-between gap-4">
-              <h1 className="text-3xl font-bold text-black sm:text-4xl">{poll.question}</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Live poll
+            </p>
+
+            <div className="mt-2 flex items-start justify-between gap-4">
+              <h1 className="text-3xl font-bold leading-tight text-black sm:text-4xl">
+                {poll.question}
+              </h1>
               <span
-                className={`mt-2 flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
+                className={`mt-1 flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
                   connected ? "bg-green-100 text-green-800" : "bg-zinc-200 text-black"
                 }`}
               >
@@ -88,18 +97,28 @@ export default function ResultsPage() {
               </span>
             </div>
 
-            <p className="mt-2 text-lg font-medium text-black">
+            <p className="mt-2 text-lg font-medium text-zinc-700">
               {totalVotes} response{totalVotes === 1 ? "" : "s"}
             </p>
+
+            <div className="mt-8 h-px w-full bg-black/[.08]" />
 
             <div className="mt-8 flex flex-col gap-6">
               {poll.options.map((option, index) => {
                 const pct = totalVotes === 0 ? 0 : Math.round((option.votes / totalVotes) * 100);
                 const color = BAR_COLORS[index] ?? OVERFLOW_COLOR;
+                const isLeader = option.id === leaderId;
                 return (
                   <div key={option.id}>
                     <div className="mb-2 flex items-end justify-between gap-3">
-                      <span className="text-xl font-semibold text-black">{option.text}</span>
+                      <span className="flex items-center gap-2 text-xl font-semibold text-black">
+                        {option.text}
+                        {isLeader && (
+                          <span className="rounded-full bg-black px-2 py-0.5 text-xs font-semibold tracking-wide text-white">
+                            LEADING
+                          </span>
+                        )}
+                      </span>
                       <span className="shrink-0 text-lg font-medium text-black">
                         {option.votes} · {pct}%
                       </span>

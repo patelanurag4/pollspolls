@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [polls, setPolls] = useState<Poll[] | null>(null);
   const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   function loadPolls() {
     fetch("/api/polls")
@@ -39,6 +40,19 @@ export default function Dashboard() {
   function handleCreated(poll: Poll) {
     setPolls((prev) => (prev ? [poll, ...prev] : [poll]));
     setModalOpen(false);
+  }
+
+  async function handleDelete(e: React.MouseEvent, pollId: string) {
+    e.stopPropagation();
+    if (!confirm("Delete this poll? This removes all of its responses too and cannot be undone."))
+      return;
+    setDeletingId(pollId);
+    try {
+      await fetch(`/api/polls/${pollId}`, { method: "DELETE" });
+      setPolls((prev) => prev?.filter((p) => p.id !== pollId) ?? null);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -80,19 +94,33 @@ export default function Dashboard() {
           {polls?.map((poll) => {
             const totalVotes = poll.options.reduce((sum, o) => sum + o.votes, 0);
             return (
-              <button
+              <div
                 key={poll.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => router.push(`/polls/${poll.id}`)}
-                className="flex flex-col items-start rounded-2xl border border-black/[.08] bg-white p-5 text-left shadow-sm transition-colors hover:border-black/25"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") router.push(`/polls/${poll.id}`);
+                }}
+                className="group relative flex cursor-pointer flex-col items-start rounded-2xl border border-black/[.08] bg-white p-5 text-left shadow-sm transition-colors hover:border-black/25"
               >
-                <p className="line-clamp-2 font-medium text-black">{poll.question}</p>
+                <button
+                  onClick={(e) => handleDelete(e, poll.id)}
+                  disabled={deletingId === poll.id}
+                  aria-label="Delete poll"
+                  className="absolute right-3 top-3 rounded-full p-1.5 text-zinc-400 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 focus-visible:opacity-100 disabled:opacity-50 group-hover:opacity-100"
+                >
+                  {deletingId === poll.id ? "…" : "✕"}
+                </button>
+
+                <p className="line-clamp-2 pr-6 font-medium text-black">{poll.question}</p>
                 <p className="mt-2 text-sm text-zinc-600">
                   {totalVotes} response{totalVotes === 1 ? "" : "s"} · {poll.options.length} options
                 </p>
                 <p className="mt-1 text-xs text-zinc-500">
                   {new Date(poll.createdAt).toLocaleDateString()}
                 </p>
-              </button>
+              </div>
             );
           })}
         </div>
